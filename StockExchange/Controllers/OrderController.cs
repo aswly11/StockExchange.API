@@ -42,6 +42,7 @@ namespace OrderExchange.Controllers
         public IActionResult Post([FromBody] Order Order)
         {
             _OrderService.Insert(Order);
+            
             return Ok(Order);
 
         }

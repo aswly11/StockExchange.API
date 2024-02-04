@@ -46,15 +46,21 @@ namespace StockExchange.Controllers
         public async Task<IActionResult> Post([FromBody] Stock stock)
         {
             _stockService.Insert(stock);
-          await  _stockSignalRService.StockChangeNotification(stock);
+
+            await SendStockChangeNotification();
+
             return Ok(stock);
 
         }
 
-
+        private async void SendStockChangeNotification()
+        {
+            var allStocks = _stockService.GetAll();
+            await _stockSignalRService.StockChangeNotification(allStocks);
+        }
 
         [HttpPut]
-        public IActionResult Put([FromBody] Stock stock)
+        public async IActionResult Put([FromBody] Stock stock)
         {
 
             var Exist = _stockService.GetByIdAsNoTracking(stock.Id);
@@ -64,6 +70,7 @@ namespace StockExchange.Controllers
             }
 
             _stockService.Update(stock);
+            await SendStockChangeNotification();
             return Ok(stock);
 
         }
@@ -76,7 +83,9 @@ namespace StockExchange.Controllers
             {
                 return NotFound("Stock Not Found");
             }
-            _stockService.Delete(id);
+            _stockService.Delete(id);            
+            await SendStockChangeNotification();
+            
             return Ok(id);
 
         }

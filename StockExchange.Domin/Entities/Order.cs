@@ -10,6 +10,7 @@ namespace StockExchange.Domain.Entities
     public class Order
     {
         public int Id { get; set; }
+        public   int Quantity { get; set; }
         public string Name { get; set; }
         public OrderType Type { get; set; }
         public int StockId { get; set; }
